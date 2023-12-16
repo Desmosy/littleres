@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+/* Tablet and larger screens */
+@media (min-width: 600px) {
+  .header-container {
+    flex-direction: row; /* Align items horizontally on larger screens */
+  }
+
+  nav {
+    margin-top: 0; /* Reset margin for navigation */
+  }
+
+  nav ul {
+    flex-direction: row; /* Align list items horizontally on larger screens */
+  }
+
+  nav li {
+    margin: 0 10px; /* Add spacing between list items on larger screens */
+  }
+}
