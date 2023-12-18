@@ -1,13 +1,72 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer, } from 'react';
 import BookingForm from './BookingForm';
 function Main() {
+  // Define initial available times as a fallback
+  const initialAvailableTimes = ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"];
 
-  const[availableTimes, setAvailableTimes]=useState(["17:00",
-  "18:00",
-  "19:00",
-  "20:00",
-  "21:00",
-  "22:00",]);
+  const [availableTimes, dispatchTimes] = useReducer(updateTimes, initialAvailableTimes);
+
+  function updateTimes(state, action) {
+    switch (action.type) {
+      case 'UPDATE_DATE':
+        const selectedDateTime = action.date;
+  
+        if (state.some((dateTime) => dateTime === selectedDateTime)) {
+          // If the date and time are already booked, return the existing state
+          return state;
+        }
+  
+        fetchAPI(action.date)
+          .then((data) => {
+            const availableDateTime = data.availableTimes.map((time) => `${action.date} ${time}`);
+            if (!availableDateTime.includes(selectedDateTime)) {
+              console.log('Selected date and time are no longer available.');
+              return state;
+            }
+  
+            dispatchTimes({ type: 'UPDATE_TIMES', times: data.availableTimes });
+          })
+          .catch((error) => {
+            console.error(error);
+            // Use the initial available times as a fallback
+            dispatchTimes({ type: 'UPDATE_TIMES', times: initialAvailableTimes });
+          });
+  
+        return state;
+      case 'UPDATE_TIMES':
+        return action.times;
+      default:
+        return state;
+    }
+  }
+  
+  
+  
+  async function fetchAPI(date) {
+    try {
+      // Implement your API fetching logic here
+      const response = await fetch(`your_api_endpoint?date=${date}`);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw new Error('Error fetching data from API: ' + error.message);
+    }
+  }
+
+  function initializeTimes(initialTimes) {
+    // Create today's date object
+    const today = new Date();
+  
+    // Use fetchData API to get available times for today
+    fetchAPI(today)
+      .then(data => dispatchTimes({ type: 'INITIALIZE_TIMES', times: data.availableTimes }))
+      .catch(error => console.error(error));
+  
+    // Initial state remains empty until data arrives
+    return initialTimes;
+  }
+  
+
   const name = "Little Lemon";
   const place = "Chicago";
   const description = "We are a family-owned Mediterranean restaurant focused on traditional recipes served with a modern twist.";
@@ -105,7 +164,7 @@ function Main() {
               paddingBottom:'20%',}}>Order for delivery</h4>
           </div>
         ))}
-        <BookingForm availableTimes={availableTimes} setAvailableTimes={setAvailableTimes}/>
+        <BookingForm availableTimes={availableTimes} dispatchTimes={dispatchTimes}/>
       </div>
     </main>
   );
