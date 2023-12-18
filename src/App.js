@@ -3,8 +3,8 @@ import Header from "./components/Header";
 import Nav from './components/nav';
 import Main from './components/main';
 import Footer from './components/footer';
-import BookingForm from './components/BookingForm';
 import {Routes, Route, Link} from 'react-router-dom';
+import BookingPage from './components/BookingPage';
 function App() {
   return (
     
@@ -12,7 +12,7 @@ function App() {
     
            <Routes>
         <Route path="/" element={<Header/>}/>
-        <Route path="/BookingForm" element={<BookingForm/>}/>
+        <Route path="/BookingForm" element={<BookingPage/>}/>
       </Routes>
       
    

@@ -1,6 +1,13 @@
-import React from 'react';
-
+import React, { useState } from 'react';
+import BookingForm from './BookingForm';
 function Main() {
+
+  const[availableTimes, setAvailableTimes]=useState(["17:00",
+  "18:00",
+  "19:00",
+  "20:00",
+  "21:00",
+  "22:00",]);
   const name = "Little Lemon";
   const place = "Chicago";
   const description = "We are a family-owned Mediterranean restaurant focused on traditional recipes served with a modern twist.";
@@ -98,6 +105,7 @@ function Main() {
               paddingBottom:'20%',}}>Order for delivery</h4>
           </div>
         ))}
+        <BookingForm availableTimes={availableTimes} setAvailableTimes={setAvailableTimes}/>
       </div>
     </main>
   );
